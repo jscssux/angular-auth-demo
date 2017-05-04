@@ -1,56 +1,51 @@
 import { Component, OnInit, HostBinding } from '@angular/core';
-import { AngularFire, AuthProviders, AuthMethods } from 'angularfire2';
+import { AngularFireModule} from 'angularfire2';
+import {AngularFireAuthModule, AngularFireAuth} from 'angularfire2/auth';
+import * as firebase from 'firebase/app';
 import { Router } from '@angular/router';
-import { moveIn } from '../router.animations';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css'],
-  animations: [moveIn()],
-  host: {'[@moveIn]': ''}
+  styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-
   error: any;
-  constructor(public af: AngularFire,private router: Router) {
-
-      this.af.auth.subscribe(auth => { 
-      if(auth) {
+  constructor(public afAuth: AngularFireAuth, private router: Router) {
+    this.afAuth.auth.onAuthStateChanged(user => {
+      if (user) {
         this.router.navigateByUrl('/members');
+      } else {
+        // No user is signed in.
       }
     });
-
   }
-
-  loginFb() {
-    this.af.auth.login({
-      provider: AuthProviders.Facebook,
-      method: AuthMethods.Popup,
-    }).then(
-        (success) => {
-        this.router.navigate(['/members']);
-      }).catch(
-        (err) => {
-        this.error = err;
-      })
-  }
-
-  loginGoogle() {
-    this.af.auth.login({
-      provider: AuthProviders.Google,
-      method: AuthMethods.Popup,
-    }).then(
-        (success) => {
-        this.router.navigate(['/members']);
-      }).catch(
-        (err) => {
-        this.error = err;
-      })
-  }
-
 
   ngOnInit() {
   }
 
+  loginGoogle() {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    provider.addScope('https://www.googleapis.com/auth/plus.login');
+    this.afAuth.auth.signInWithRedirect(provider);
+    this.afAuth.auth.getRedirectResult().then(result => {
+      if (result.credential) {
+        // This gives you a Google Access Token. You can use it to access the Google API.
+        const token = result.credential.accessToken;
+        // ...
+      }
+      // The signed-in user info.
+      const user = result.user;
+      this.router.navigate(['/members']);
+    }).catch(error => {
+      // Handle Errors here.
+/*      const errorCode = error.code;
+      const errorMessage = error.message;
+      // The email of the user's account used.
+      const email = error.email;
+      // The firebase.auth.AuthCredential type that was used.
+      const credential = error.credential;*/
+      // ...
+    });
+  }
 }

@@ -1,3 +1,6 @@
+/**
+ * Created by ILuo on 2017/5/4.
+ */
 import { ModuleWithProviders } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
@@ -13,8 +16,8 @@ export const router: Routes = [
     { path: 'login', component: LoginComponent },
     { path: 'signup', component: SignupComponent },
     { path: 'login-email', component: EmailComponent },
-    { path: 'members', component: MembersComponent, canActivate: [AuthGuard] }
+    { path: 'members', component: MembersComponent}
 
-]
+];
 
 export const routes: ModuleWithProviders = RouterModule.forRoot(router);

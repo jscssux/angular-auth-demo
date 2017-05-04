@@ -1,10 +1,10 @@
-import { MyauthappPage } from './app.po';
+import { NgfirebasePage } from './app.po';
 
-describe('myauthapp App', function() {
-  let page: MyauthappPage;
+describe('ngfirebase App', () => {
+  let page: NgfirebasePage;
 
   beforeEach(() => {
-    page = new MyauthappPage();
+    page = new NgfirebasePage();
   });
 
   it('should display message saying app works', () => {
